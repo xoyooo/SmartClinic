@@ -59,7 +59,7 @@
                                 @endif
                             </td>
                             <td class="px-5 py-4 text-gray-600 font-semibold">
-                                {{ substr($jadwal->jam_mulai, 0, 5) }} – {{ substr($jadwal->jam_selesai, 0, 5) }} WIB
+                                {{ str_replace(':', '.', substr($jadwal->jam_mulai, 0, 5)) }} – {{ str_replace(':', '.', substr($jadwal->jam_selesai, 0, 5)) }} WIB
                             </td>
                             <td class="px-5 py-4">
                                 <span class="px-2.5 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">{{ $jadwal->kuota }} pasien</span>

@@ -104,7 +104,7 @@
                                         <span class="px-2.5 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">Expired</span>
                                     @endif
                                 </td>
-                                <td class="px-5 py-3.5 text-gray-500 text-sm font-medium">{{ $b->created_at?->format('H:i') }}</td>
+                                <td class="px-5 py-3.5 text-gray-500 text-sm font-medium">{{ $b->created_at?->format('H.i') }}</td>
                             </tr>
                         @empty
                             <tr><td colspan="4" class="px-5 py-12 text-center text-gray-400 text-sm font-semibold">Belum ada booking hari ini.</td></tr>

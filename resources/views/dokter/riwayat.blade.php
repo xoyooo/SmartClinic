@@ -47,7 +47,7 @@
                     <tbody class="divide-y divide-gray-50">
                         @foreach($riwayat as $p)
                             <tr class="hover:bg-gray-50/80 transition riwayat-row">
-                                <td class="px-5 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap">{{ $p->created_at?->format('d M Y, H:i') }}</td>
+                                <td class="px-5 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap">{{ $p->created_at?->format('d M Y, H.i') }}</td>
                                 <td class="px-5 py-4 font-bold patient-name">
                                     <a href="{{ route('dokter.pasien.detail', $p->booking->pasien) }}"
                                        class="text-primary-DEFAULT hover:text-primary-600 hover:underline underline-offset-2 transition">

@@ -16,7 +16,7 @@
             <div class="bg-white rounded-2xl border border-gray-200/85 p-5 shadow-sm space-y-3.5">
                 <div class="flex items-center justify-between border-b border-gray-50 pb-2">
                     <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">
-                        {{ $booking->created_at->format('d M Y, H:i') }} WIB
+                        {{ $booking->created_at->format('d M Y, H.i') }} WIB
                     </span>
                     @if($booking->status === 'selesai')
                         <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-extrabold uppercase border border-emerald-100">Selesai</span>

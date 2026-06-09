@@ -75,7 +75,7 @@
                         <div class="flex items-start justify-between gap-3">
                             <div>
                                 <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                                    {{ tglID($periksa->created_at, false) }}, {{ $periksa->created_at->format('H:i') }} WIB
+                                    {{ tglID($periksa->created_at, false) }}, {{ $periksa->created_at->format('H.i') }} WIB
                                 </p>
                                 <p class="font-bold text-gray-900 mt-0.5">
                                     {{ $periksa->booking->jadwal->poli->nama_poli ?? '—' }}

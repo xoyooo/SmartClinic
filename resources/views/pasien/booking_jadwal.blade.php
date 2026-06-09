@@ -72,7 +72,7 @@
                     </div>
                     <div>
                         <span class="block text-[10px] text-gray-400 uppercase font-bold">Jam Kerja</span>
-                        <span class="text-gray-800 font-bold">{{ substr($jadwal->jam_mulai, 0, 5) }} – {{ substr($jadwal->jam_selesai, 0, 5) }} WIB</span>
+                        <span class="text-gray-800 font-bold">{{ str_replace(':', '.', substr($jadwal->jam_mulai, 0, 5)) }} – {{ str_replace(':', '.', substr($jadwal->jam_selesai, 0, 5)) }} WIB</span>
                     </div>
                 </div>
 

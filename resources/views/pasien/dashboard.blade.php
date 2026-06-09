@@ -62,7 +62,7 @@
                     <div>
                         <p class="text-white/50 text-[10px] uppercase font-bold tracking-wide">Jam Praktik</p>
                         <p class="text-white font-bold text-sm mt-0.5">
-                            {{ substr($bookingAktif->jadwal->jam_mulai, 0, 5) }}–{{ substr($bookingAktif->jadwal->jam_selesai, 0, 5) }} WIB
+                            {{ str_replace(':', '.', substr($bookingAktif->jadwal->jam_mulai, 0, 5)) }}–{{ str_replace(':', '.', substr($bookingAktif->jadwal->jam_selesai, 0, 5)) }} WIB
                         </p>
                     </div>
                 </div>

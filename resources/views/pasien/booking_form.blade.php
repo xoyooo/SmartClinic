@@ -37,7 +37,7 @@
                 </div>
                 <div>
                     <span class="block text-[10px] text-primary-100 uppercase font-bold">Jam Praktik</span>
-                    <span class="font-extrabold text-sm">{{ substr($jadwal->jam_mulai, 0, 5) }} - {{ substr($jadwal->jam_selesai, 0, 5) }} WIB</span>
+                    <span class="font-extrabold text-sm">{{ str_replace(':', '.', substr($jadwal->jam_mulai, 0, 5)) }} - {{ str_replace(':', '.', substr($jadwal->jam_selesai, 0, 5)) }} WIB</span>
                 </div>
             </div>
             <div class="pt-1 flex items-center gap-1.5 text-[10px] text-white/60 font-bold border-t border-white/10">
@@ -115,7 +115,7 @@
                                     border-gray-200 bg-white text-gray-700 hover:border-accent-DEFAULT/50 hover:bg-accent-50/40
                                 @endif">
                             
-                            <span class="font-extrabold text-sm leading-none">{{ $slot }}</span>
+                            <span class="font-extrabold text-sm leading-none">{{ str_replace(':', '.', $slot) }}</span>
                             
                             @if($isBooked)
                                 <span class="text-[8px] font-bold text-red-500 uppercase tracking-wide leading-none mt-1">Booked</span>
@@ -191,13 +191,15 @@
         // Update display
         display.classList.remove('hidden');
         display.classList.add('flex');
-        dispTxt.textContent = 'Slot terpilih: ' + slot + ' WIB (selesai pukul ' + addMinutes(slot, 30) + ' WIB)';
+        const slotDisplay = slot.replace(':', '.');
+        const endDisplay = addMinutes(slot, 30).replace(':', '.');
+        dispTxt.textContent = 'Slot terpilih: ' + slotDisplay + ' WIB (selesai pukul ' + endDisplay + ' WIB)';
 
         // Enable submit button
         submitBtn.disabled = false;
         submitBtn.classList.remove('bg-gray-200', 'text-gray-400', 'cursor-not-allowed');
         submitBtn.classList.add('bg-accent-DEFAULT', 'hover:bg-accent-600', 'text-white', 'cursor-pointer');
-        submitBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Booking Slot ${slot} WIB`;
+        submitBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Booking Slot ${slotDisplay} WIB`;
     }
 
     function addMinutes(time, mins) {

@@ -167,11 +167,11 @@ class BookingController extends Controller
 
         Notifikasi::create([
             'user_id' => auth()->id(),
-            'pesan'   => 'Booking berhasil! Kode: ' . $kode . ' — Tanggal: ' . tglID(\Carbon\Carbon::parse($tanggal), false) . ', Slot: ' . $slot . ' WIB.',
+            'pesan'   => 'Booking berhasil! Kode: ' . $kode . ' — Tanggal: ' . tglID(\Carbon\Carbon::parse($tanggal), false) . ', Slot: ' . str_replace(':', '.', $slot) . ' WIB.',
         ]);
 
         return redirect()->route('pasien.booking.show', $booking)
-            ->with('success', 'Booking berhasil! Slot ' . $slot . ' WIB tanggal ' . tglID(\Carbon\Carbon::parse($tanggal), false) . ' telah dikonfirmasi.');
+            ->with('success', 'Booking berhasil! Slot ' . str_replace(':', '.', $slot) . ' WIB tanggal ' . tglID(\Carbon\Carbon::parse($tanggal), false) . ' telah dikonfirmasi.');
     }
 
     public function show(Booking $booking)

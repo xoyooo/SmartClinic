@@ -55,14 +55,14 @@
                 @if($booking->slot_waktu)
                 <div>
                     <span class="block text-[10px] text-gray-400 uppercase font-bold">Slot Waktu</span>
-                    <span class="text-gray-900 font-extrabold text-sm text-accent-DEFAULT">{{ substr($booking->slot_waktu, 0, 5) }} WIB</span>
+                    <span class="text-gray-900 font-extrabold text-sm text-accent-DEFAULT">{{ str_replace(':', '.', substr($booking->slot_waktu, 0, 5)) }} WIB</span>
                 </div>
                 <div>
                     <span class="block text-[10px] text-gray-400 uppercase font-bold">Status Antrian</span>
                 @else
                 <div>
                     <span class="block text-[10px] text-gray-400 uppercase font-bold">Jam Praktik</span>
-                    <span class="text-gray-900 font-extrabold text-sm">{{ substr($booking->jadwal->jam_mulai, 0, 5) }} - {{ substr($booking->jadwal->jam_selesai, 0, 5) }} WIB</span>
+                    <span class="text-gray-900 font-extrabold text-sm">{{ str_replace(':', '.', substr($booking->jadwal->jam_mulai, 0, 5)) }} - {{ str_replace(':', '.', substr($booking->jadwal->jam_selesai, 0, 5)) }} WIB</span>
                 </div>
                 <div>
                     <span class="block text-[10px] text-gray-400 uppercase font-bold">Status Antrian</span>
@@ -81,7 +81,7 @@
 
             <div class="border-t border-gray-50 pt-4 text-center">
                 <span class="block text-[10px] text-gray-400 uppercase font-bold">Batas Waktu Scan</span>
-                <span class="text-red-500 font-extrabold text-sm">Hari ini s/d {{ \Carbon\Carbon::parse($booking->expired_at)->format('H:i') }} WIB</span>
+                <span class="text-red-500 font-extrabold text-sm">Hari ini s/d {{ \Carbon\Carbon::parse($booking->expired_at)->format('H.i') }} WIB</span>
             </div>
         </div>
     </div>
