@@ -1,4 +1,4 @@
-@extends('layouts.patient')
+﻿@extends('layouts.patient')
 
 @if($step === 'index')
     @section('title', 'Pilih Poliklinik')
@@ -127,7 +127,6 @@
                         <p class="text-xs text-accent-DEFAULT font-bold uppercase tracking-wide">{{ $jadwal->dokter->spesialis ?? '-' }}</p>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-3 bg-gray-50 p-3.5 rounded-xl text-xs font-semibold text-gray-500 border border-gray-100">
                     <div>
                         <span class="block text-[10px] text-gray-400 uppercase font-bold">Hari & Tanggal</span>
@@ -135,7 +134,7 @@
                     </div>
                     <div>
                         <span class="block text-[10px] text-gray-400 uppercase font-bold">Jam Kerja</span>
-                        <span class="text-gray-800 font-bold">{{ str_replace(':', '.', substr($jadwal->jam_mulai, 0, 5)) }} â€“ {{ str_replace(':', '.', substr($jadwal->jam_selesai, 0, 5)) }} WIB</span>
+                        <span class="text-gray-800 font-bold">{{ str_replace(':', '.', substr($jadwal->jam_mulai, 0, 5)) }} - {{ str_replace(':', '.', substr($jadwal->jam_selesai, 0, 5)) }} WIB</span>
                     </div>
                 </div>
 
@@ -231,7 +230,7 @@
             </div>
             <div class="pt-1 flex items-center gap-1.5 text-[10px] text-white/60 font-bold border-t border-white/10">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Durasi per pasien: 30 menit Â· Istirahat: 12.30 â€“ 14.00 WIB
+                Durasi per pasien: 30 menit - Istirahat: 12.30 - 14.00 WIB
             </div>
         </div>
     </div>
@@ -329,12 +328,10 @@
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span id="slot-selected-text">Slot terpilih: â€”</span>
+                    <span id="slot-selected-text">Slot terpilih: -</span>
                 </div>
             @endif
         </div>
-
-        <!-- Keluhan -->
         <div class="bg-white rounded-2xl border border-gray-200/85 p-5 shadow-sm space-y-4">
             <div class="space-y-1.5">
                 <label for="keluhan" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Keluhan Medis / Gejala <span class="text-red-500">*</span></label>
