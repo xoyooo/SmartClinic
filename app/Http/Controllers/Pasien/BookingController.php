@@ -60,7 +60,8 @@ class BookingController extends Controller
                 ->count();
         });
 
-        return view('pasien.booking_index', compact('polis'));
+        $step = 'index';
+        return view('pasien.booking', compact('polis', 'step'));
     }
 
     public function jadwal(Request $request)
@@ -85,7 +86,8 @@ class BookingController extends Controller
         })->filter()->sortBy('tanggal_jadwal')->values();
 
         $poli = Poli::find($request->poli_id);
-        return view('pasien.booking_jadwal', compact('jadwals', 'poli'));
+        $step = 'jadwal';
+        return view('pasien.booking', compact('jadwals', 'poli', 'step'));
     }
 
     public function form(JadwalPraktik $jadwal, Request $request)
@@ -112,15 +114,16 @@ class BookingController extends Controller
 
         $bookedSlots = Booking::where('jadwal_id', $jadwal->id)
             ->whereDate('tanggal_booking', $tanggal)
-            ->whereIn('status', ['pending', 'checked_in'])
+            ->whereIn('status', ['pending', 'checked_in', 'selesai'])
             ->pluck('slot_waktu')
             ->map(fn($t) => substr($t, 0, 5))
             ->toArray();
 
         $jadwal->load(['dokter.user', 'poli']);
         $tanggalLabel = tglID(\Carbon\Carbon::parse($tanggal));
+        $step = 'form';
 
-        return view('pasien.booking_form', compact('jadwal', 'allSlots', 'bookedSlots', 'tanggal', 'tanggalLabel'));
+        return view('pasien.booking', compact('jadwal', 'allSlots', 'bookedSlots', 'tanggal', 'tanggalLabel', 'step'));
     }
 
     public function store(BookingRequest $request)
@@ -185,6 +188,7 @@ class BookingController extends Controller
 
         $booking->refresh();
         $booking->load(['jadwal.dokter.user', 'jadwal.poli']);
-        return view('pasien.booking_show', compact('booking'));
+        $step = 'show';
+        return view('pasien.booking', compact('booking', 'step'));
     }
 }

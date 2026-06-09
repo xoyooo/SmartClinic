@@ -65,11 +65,12 @@
                 <table class="min-w-full text-sm">
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-100">
+                            <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">No. Antrian</th>
                             <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">No. Booking</th>
                             <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">Nama Pasien</th>
                             <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">Poli</th>
                             <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">Keluhan</th>
-                            <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">Status</th>
+                            <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">Jam Booking</th>
                             <th class="px-5 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wide w-28">Aksi</th>
                         </tr>
                     </thead>
@@ -77,22 +78,17 @@
                         @foreach($pasienHariIni as $b)
                             <tr class="hover:bg-gray-50/80 transition">
                                 <td class="px-5 py-4">
+                                    <div class="w-8 h-8 rounded-full bg-accent-50 text-accent-DEFAULT flex items-center justify-center font-bold text-xs border border-accent-100">
+                                        {{ $b->nomorAntrian() }}
+                                    </div>
+                                </td>
+                                <td class="px-5 py-4">
                                     <span class="font-bold text-primary-DEFAULT text-sm">{{ $b->kode_booking }}</span>
                                 </td>
                                 <td class="px-5 py-4 font-bold text-gray-900">{{ $b->pasien->name ?? '-' }}</td>
                                 <td class="px-5 py-4 text-gray-600 font-semibold">{{ $b->jadwal->poli->nama_poli ?? '-' }}</td>
                                 <td class="px-5 py-4 text-gray-500 font-medium max-w-xs truncate">{{ $b->keluhan ?? '—' }}</td>
-                                <td class="px-5 py-4">
-                                    @if($b->status === 'pending')
-                                        <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-100 uppercase">Menunggu Scan</span>
-                                    @elseif($b->status === 'checked_in')
-                                        <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-primary-50 text-primary-DEFAULT border border-primary-100 uppercase">Checked In</span>
-                                    @elseif($b->status === 'selesai')
-                                        <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase">Selesai</span>
-                                    @else
-                                        <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-50 text-red-600 border border-red-100 uppercase">Expired</span>
-                                    @endif
-                                </td>
+                                <td class="px-5 py-4 text-gray-900 font-bold text-sm">{{ $b->slot_waktu ? $b->slot_waktu . ' WIB' : '-' }}</td>
                                 <td class="px-5 py-4">
                                     <div class="flex items-center justify-center gap-2">
                                         {{-- Tombol Detail Pasien (selalu ada) --}}
@@ -134,13 +130,19 @@
                 @foreach($pasienHariIni as $b)
                     <div class="bg-gray-50 rounded-xl border border-gray-100 p-4 space-y-3">
                         <div class="flex items-center justify-between">
-                            <span class="font-bold text-primary-DEFAULT text-sm">{{ $b->kode_booking }}</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-accent-50 text-accent-DEFAULT flex items-center justify-center font-bold text-[10px] border border-accent-100">
+                                    {{ $b->nomorAntrian() }}
+                                </div>
+                                <span class="font-bold text-primary-DEFAULT text-sm">{{ $b->kode_booking }}</span>
+                            </div>
                             <span class="text-xs font-bold text-gray-500">{{ $b->jadwal->poli->nama_poli ?? '-' }}</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <div>
                                 <h4 class="font-bold text-gray-900">{{ $b->pasien->name ?? '-' }}</h4>
-                                <p class="text-xs text-gray-500 font-medium mt-0.5">{{ $b->keluhan ?? 'Tidak ada keluhan' }}</p>
+                                <p class="text-xs text-primary-DEFAULT font-bold mt-1 mb-0.5"><span class="text-gray-400 font-medium">Jam:</span> {{ $b->slot_waktu ? $b->slot_waktu . ' WIB' : '-' }}</p>
+                                <p class="text-xs text-gray-500 font-medium">{{ $b->keluhan ?? 'Tidak ada keluhan' }}</p>
                             </div>
                             <a href="{{ route('dokter.pasien.detail', $b->pasien) }}"
                                class="shrink-0 px-3 py-1.5 bg-primary-50 hover:bg-primary-100 text-primary-DEFAULT text-xs font-bold rounded-xl border border-primary-100 transition">

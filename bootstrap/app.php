@@ -14,6 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
+
+        $middleware->redirectUsersTo(function () {
+            if (auth()->check()) {
+                $role = auth()->user()->role;
+                return route($role . '.dashboard');
+            }
+            return '/';
+        });
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

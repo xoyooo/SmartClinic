@@ -124,7 +124,7 @@
                         <span class="font-bold text-sm text-gray-900">Notifikasi</span>
                         @if($unread->count() > 0)
                             <form method="POST" action="{{ route('notifikasi.read-all') }}">@csrf
-                                <button class="text-xs text-accent-DEFAULT hover:text-accent-600 font-bold">Baca semua</button>
+                                <button class="text-xs text-red-500 hover:text-red-700 font-bold">Hapus semua</button>
                             </form>
                         @endif
                     </div>

@@ -52,6 +52,7 @@ Route::prefix('pasien')->name('pasien.')->middleware(['auth', 'role:pasien'])->g
     Route::post('/booking',             [BookingController::class, 'store'])->name('booking.store');
     Route::get('/booking/{booking}',    [BookingController::class, 'show'])->name('booking.show');
 
+    Route::get('/resep',                        [ResepController::class, 'index'])->name('resep.index');
     Route::get('/resep/{pemeriksaan}',          [ResepController::class, 'show'])->name('resep.show');
     Route::get('/resep/{pemeriksaan}/download', [ResepController::class, 'download'])->name('resep.download');
     Route::get('/riwayat',                      [PasienDash::class, 'riwayat'])->name('riwayat');

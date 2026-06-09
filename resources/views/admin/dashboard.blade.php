@@ -32,10 +32,10 @@
     <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
         @php
             $stats = [
-                ['label' => 'Pasien Hari Ini',  'value' => $total_pasien_hari_ini, 'color' => 'primary', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5V4H2v16h5m10 0v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2m10 0H7m5-12a4 4 0 110 8 4 4 0 010-8z"/>'],
-                ['label' => 'Total Booking',    'value' => $total_booking,         'color' => 'accent',  'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v11a2 2 0 002 2z"/>'],
-                ['label' => 'Total Poli',        'value' => $total_poli,            'color' => 'emerald', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>'],
-                ['label' => 'Sudah Check-in',   'value' => $checked_in_count,      'color' => 'sky',     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
+                ['label' => 'Total Pasien Hari Ini', 'value' => $total_pasien_hari_ini,   'color' => 'primary', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5V4H2v16h5m10 0v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2m10 0H7m5-12a4 4 0 110 8 4 4 0 010-8z"/>'],
+                ['label' => 'Pasien Selesai Hari Ini','value' => $pasien_selesai_hari_ini, 'color' => 'emerald', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
+                ['label' => 'Antrian Pasien',        'value' => $antrian_pasien,          'color' => 'accent',  'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>'],
+                ['label' => 'Total Poli',            'value' => $total_poli,              'color' => 'sky',     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>'],
             ];
             $colorMap = [
                 'primary' => ['bg' => 'bg-primary-50',  'text' => 'text-primary-DEFAULT', 'val' => 'text-primary-DEFAULT'],
@@ -76,15 +76,21 @@
                 <table class="min-w-full text-sm">
                     <thead>
                         <tr class="bg-gray-50 text-gray-500 border-b border-gray-100">
+                            <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wide">No. Antrian</th>
                             <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wide">Pasien</th>
                             <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wide">Poli / Dokter</th>
                             <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wide">Status</th>
-                            <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wide">Waktu</th>
+                            <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wide">Jam Booking</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
                         @forelse($booking_hari_ini as $b)
                             <tr class="hover:bg-gray-50/70 transition">
+                                <td class="px-5 py-3.5">
+                                    <div class="w-8 h-8 rounded-full bg-primary-50 text-primary-DEFAULT flex items-center justify-center font-bold text-xs border border-primary-100">
+                                        {{ $b->nomorAntrian() }}
+                                    </div>
+                                </td>
                                 <td class="px-5 py-3.5">
                                     <p class="font-bold text-gray-900 text-sm">{{ $b->pasien->name ?? '-' }}</p>
                                     <p class="text-xs text-gray-400 font-semibold">{{ $b->kode_booking }}</p>
@@ -104,10 +110,10 @@
                                         <span class="px-2.5 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">Expired</span>
                                     @endif
                                 </td>
-                                <td class="px-5 py-3.5 text-gray-500 text-sm font-medium">{{ $b->created_at?->format('H.i') }}</td>
+                                <td class="px-5 py-3.5 text-gray-900 text-sm font-bold">{{ $b->slot_waktu ? $b->slot_waktu . ' WIB' : '-' }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="4" class="px-5 py-12 text-center text-gray-400 text-sm font-semibold">Belum ada booking hari ini.</td></tr>
+                            <tr><td colspan="5" class="px-5 py-12 text-center text-gray-400 text-sm font-semibold">Belum ada booking hari ini.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

@@ -69,7 +69,8 @@
         $isBookingNav  = request()->routeIs('pasien.booking.index*', 'pasien.booking.jadwal*', 'pasien.booking.form*');
         $activeBooking = \App\Models\Booking::where('pasien_id', auth()->id())->whereIn('status', ['pending','checked_in'])->latest()->first();
         $isAntrianNav  = request()->routeIs('pasien.booking.show*');
-        $isRiwayatNav  = request()->routeIs('pasien.riwayat*', 'pasien.resep*');
+        $isRiwayatNav  = request()->routeIs('pasien.riwayat*');
+        $isResepNav    = request()->routeIs('pasien.resep*');
     @endphp
 
     {{-- ───────── TOP HEADER ───────── --}}
@@ -98,6 +99,11 @@
                 <div id="notif-drop" class="hidden drop-anim absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
                     <div class="px-4 py-2.5 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                         <span class="font-bold text-xs text-gray-700">Notifikasi</span>
+                        @if($unreadNotifs->count() > 0)
+                            <form method="POST" action="{{ route('notifikasi.read-all') }}">@csrf
+                                <button class="text-[10px] text-red-500 hover:text-red-700 font-bold">Hapus semua</button>
+                            </form>
+                        @endif
                     </div>
                     <div class="max-h-64 overflow-y-auto divide-y divide-gray-50">
                         @forelse($unreadNotifs as $notif)
@@ -213,6 +219,15 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <span class="text-[10px] font-bold">Riwayat</span>
+            </a>
+
+            {{-- Resep --}}
+            <a href="{{ route('pasien.resep.index') }}" class="flex-1 flex flex-col items-center justify-center gap-0.5 relative transition {{ $isResepNav ? 'text-accent-DEFAULT' : 'text-gray-400' }}">
+                @if($isResepNav)<span class="tab-active-indicator"></span>@endif
+                <svg class="w-5 h-5" fill="{{ $isResepNav ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+                <span class="text-[10px] font-bold">Resep</span>
             </a>
 
         </div>

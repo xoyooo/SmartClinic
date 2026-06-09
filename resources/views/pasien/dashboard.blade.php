@@ -15,26 +15,6 @@
         </div>
     </div>
 
-    {{-- Resep Banner (muncul hanya jika ada pemeriksaan selesai) --}}
-    @if($pemeriksaanTerbaru)
-        <a href="{{ route('pasien.resep.show', $pemeriksaanTerbaru) }}"
-           class="flex items-center gap-3.5 bg-gradient-to-r from-accent-DEFAULT to-accent-600 rounded-2xl p-4 text-white shadow-md shadow-accent-100/50 hover:opacity-95 transition">
-            <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="font-extrabold text-sm leading-tight">Resep Dokter Tersedia!</p>
-                <p class="text-white/80 text-xs font-semibold mt-0.5 truncate">
-                    {{ $pemeriksaanTerbaru->reseps->count() > 0 ? $pemeriksaanTerbaru->reseps->count() . ' obat terdaftar — Tap untuk lihat & cetak PDF' : 'Tap untuk lihat hasil pemeriksaan' }}
-                </p>
-            </div>
-            <svg class="w-4 h-4 text-white/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-            </svg>
-        </a>
-    @endif
 
     {{-- Active Booking Card --}}
     @if($bookingAktif)

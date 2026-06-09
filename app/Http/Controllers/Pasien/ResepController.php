@@ -7,6 +7,19 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ResepController extends Controller
 {
+    public function index()
+    {
+        $pemeriksaans = Pemeriksaan::whereHas('booking', function ($q) {
+                $q->where('pasien_id', auth()->id());
+            })
+            ->whereHas('reseps')
+            ->with(['booking.jadwal.poli', 'dokter.user', 'reseps'])
+            ->latest()
+            ->get();
+
+        return view('pasien.resep_index', compact('pemeriksaans'));
+    }
+
     public function show(Pemeriksaan $pemeriksaan)
     {
         if ($pemeriksaan->booking->pasien_id !== auth()->id()) abort(403);

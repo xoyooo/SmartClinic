@@ -127,10 +127,20 @@
                     <input type="number" name="kuota" required min="1" value="20" class="{{ $iCls }}"></div>
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <div><label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Jam Mulai</label>
-                    <input type="time" name="jam_mulai" required class="{{ $iCls }}"></div>
-                <div><label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Jam Selesai</label>
-                    <input type="time" name="jam_selesai" required class="{{ $iCls }}"></div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Jam Mulai</label>
+                    <div class="relative">
+                        <input type="text" name="jam_mulai" required placeholder="08:00" maxlength="5" oninput="maskTime(this)" class="{{ $iCls }} pr-12 text-center tracking-widest font-bold">
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-gray-400 pointer-events-none uppercase">WIB</div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Jam Selesai</label>
+                    <div class="relative">
+                        <input type="text" name="jam_selesai" required placeholder="14:00" maxlength="5" oninput="maskTime(this)" class="{{ $iCls }} pr-12 text-center tracking-widest font-bold">
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-gray-400 pointer-events-none uppercase">WIB</div>
+                    </div>
+                </div>
             </div>
             <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
                 <button type="button" onclick="toggleModal('addModal', false)" class="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-gray-700 rounded-xl transition">Batal</button>
@@ -173,10 +183,20 @@
                     <input type="number" id="edit_kuota" name="kuota" required min="1" class="{{ $iCls }}"></div>
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <div><label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Jam Mulai</label>
-                    <input type="time" id="edit_jam_mulai" name="jam_mulai" required class="{{ $iCls }}"></div>
-                <div><label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Jam Selesai</label>
-                    <input type="time" id="edit_jam_selesai" name="jam_selesai" required class="{{ $iCls }}"></div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Jam Mulai</label>
+                    <div class="relative">
+                        <input type="text" id="edit_jam_mulai" name="jam_mulai" required placeholder="08:00" maxlength="5" oninput="maskTime(this)" class="{{ $iCls }} pr-12 text-center tracking-widest font-bold">
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-gray-400 pointer-events-none uppercase">WIB</div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Jam Selesai</label>
+                    <div class="relative">
+                        <input type="text" id="edit_jam_selesai" name="jam_selesai" required placeholder="14:00" maxlength="5" oninput="maskTime(this)" class="{{ $iCls }} pr-12 text-center tracking-widest font-bold">
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-gray-400 pointer-events-none uppercase">WIB</div>
+                    </div>
+                </div>
             </div>
             <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
                 <button type="button" onclick="toggleModal('editModal', false)" class="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-gray-700 rounded-xl transition">Batal</button>
@@ -189,6 +209,25 @@
 
 @push('scripts')
 <script>
+    function maskTime(input) {
+        let v = input.value.replace(/\D/g, '').substring(0, 4);
+        if (v.length >= 3) {
+            let h = parseInt(v.substring(0, 2));
+            if (h > 23) h = 23; // Max jam 23
+            let m = v.substring(2, 4);
+            if (parseInt(m) > 59) m = 59; // Max menit 59
+            
+            // Format dgn leading zero utk jam jika length >= 3
+            let hStr = h.toString();
+            if (v.substring(0,2) === '00') hStr = '00';
+            else if (h < 10 && v.substring(0,1) === '0') hStr = '0' + h;
+            
+            input.value = hStr + ':' + m;
+        } else {
+            input.value = v;
+        }
+    }
+
     const daysID   = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
     const monthsID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
@@ -215,6 +254,7 @@
         document.getElementById('edit_kuota').value = j.kuota;
         document.getElementById('edit_jam_mulai').value = j.jam_mulai.substring(0, 5);
         document.getElementById('edit_jam_selesai').value = j.jam_selesai.substring(0, 5);
+
         updateHariPreview('edit_tanggal', 'edit_hari_preview');
         toggleModal('editModal', true);
     }

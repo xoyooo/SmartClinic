@@ -13,6 +13,10 @@ class DashboardController extends Controller
         $data = [
             'total_pasien_hari_ini' => Booking::whereDate('tanggal_booking', $today)
                 ->whereIn('status', ['pending','checked_in','selesai'])->count(),
+            'pasien_selesai_hari_ini' => Booking::whereDate('tanggal_booking', $today)
+                ->where('status', 'selesai')->count(),
+            'antrian_pasien'        => Booking::whereDate('tanggal_booking', $today)
+                ->whereIn('status', ['pending', 'checked_in'])->count(),
             'total_booking'         => Booking::count(),
             'total_poli'            => Poli::count(),
             'total_dokter'          => User::where('role', 'dokter')->count(),

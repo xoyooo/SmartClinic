@@ -96,7 +96,7 @@ class JadwalPraktik extends Model
 
         $booked = $this->bookings()
             ->whereDate('tanggal_booking', $date)
-            ->whereIn('status', ['pending', 'checked_in'])
+            ->whereIn('status', ['pending', 'checked_in', 'selesai'])
             ->pluck('slot_waktu')
             ->map(fn($t) => substr($t, 0, 5))
             ->toArray();

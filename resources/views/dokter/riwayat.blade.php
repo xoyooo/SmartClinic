@@ -36,7 +36,7 @@
                 <table class="min-w-full text-sm" id="riwayatTable">
                     <thead>
                         <tr class="bg-gray-50 border-b border-gray-100">
-                            <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">Tanggal</th>
+                            <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">Jadwal & Antrian</th>
                             <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">Pasien</th>
                             <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">Poli</th>
                             <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wide">Diagnosis</th>
@@ -47,7 +47,15 @@
                     <tbody class="divide-y divide-gray-50">
                         @foreach($riwayat as $p)
                             <tr class="hover:bg-gray-50/80 transition riwayat-row">
-                                <td class="px-5 py-4 text-gray-500 font-semibold text-xs whitespace-nowrap">{{ $p->created_at?->format('d M Y, H.i') }}</td>
+                                <td class="px-5 py-4">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <div class="w-6 h-6 rounded-full bg-accent-50 text-accent-DEFAULT flex items-center justify-center font-bold text-[10px] border border-accent-100" title="Nomor Antrian">
+                                            {{ $p->booking->nomorAntrian() }}
+                                        </div>
+                                        <span class="text-gray-900 font-bold text-sm">{{ $p->booking->slot_waktu ? $p->booking->slot_waktu . ' WIB' : '-' }}</span>
+                                    </div>
+                                    <span class="text-gray-400 font-semibold text-[11px] uppercase tracking-wide">{{ $p->booking->tanggal_booking?->format('d M Y') }}</span>
+                                </td>
                                 <td class="px-5 py-4 font-bold patient-name">
                                     <a href="{{ route('dokter.pasien.detail', $p->booking->pasien) }}"
                                        class="text-primary-DEFAULT hover:text-primary-600 hover:underline underline-offset-2 transition">
@@ -80,10 +88,16 @@
                 @foreach($riwayat as $p)
                     <div class="bg-gray-50 rounded-xl border border-gray-100 p-4 space-y-2 mobile-card">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs text-gray-400 font-bold">{{ $p->created_at?->format('d M Y') }}</span>
-                            <span class="text-xs font-bold text-emerald-600">{{ $p->booking->jadwal->poli->nama_poli ?? '-' }}</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-accent-50 text-accent-DEFAULT flex items-center justify-center font-bold text-[10px] border border-accent-100">
+                                    {{ $p->booking->nomorAntrian() }}
+                                </div>
+                                <span class="text-gray-900 font-bold text-sm">{{ $p->booking->slot_waktu ? $p->booking->slot_waktu . ' WIB' : '-' }}</span>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wide">{{ $p->booking->tanggal_booking?->format('d M Y') }}</span>
                         </div>
                         <h4 class="font-bold text-gray-900 patient-name">{{ $p->booking->pasien->name ?? '-' }}</h4>
+                        <span class="inline-block px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-md border border-emerald-100 mb-1">{{ $p->booking->jadwal->poli->nama_poli ?? '-' }}</span>
                         <p class="text-xs text-gray-500 font-medium diagnosis-col">{{ Str::limit($p->diagnosis, 80) }}</p>
                         <div class="flex items-center justify-between pt-1">
                             @if($p->reseps->isNotEmpty())

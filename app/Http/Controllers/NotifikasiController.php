@@ -13,24 +13,15 @@ class NotifikasiController extends Controller
             abort(403);
         }
 
-        $notifikasi->update([
-            'is_read' => true
-        ]);
+        $notifikasi->delete();
 
-        return response()->json([
-            'success' => true
-        ]);
+        return back();
     }
 
     public function markAllRead()
     {
-        Auth::user()
-            ->notifikasis()
-            ->where('is_read', false)
-            ->update([
-                'is_read' => true
-            ]);
+        Auth::user()->notifikasis()->delete();
 
-        return back()->with('success', 'Semua notifikasi ditandai telah dibaca.');
+        return back()->with('success', 'Semua notifikasi berhasil dibersihkan.');
     }
 }

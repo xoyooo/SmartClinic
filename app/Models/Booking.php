@@ -50,7 +50,7 @@ class Booking extends Model
         return self::where('jadwal_id', $this->jadwal_id)
             ->whereDate('tanggal_booking', $this->tanggal_booking->format('Y-m-d'))
             ->whereIn('status', ['pending', 'checked_in', 'selesai'])
-            ->where('id', '<=', $this->id)
+            ->where('slot_waktu', '<=', $this->slot_waktu)
             ->count();
     }
 }

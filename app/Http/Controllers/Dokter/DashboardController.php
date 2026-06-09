@@ -18,7 +18,7 @@ class DashboardController extends Controller
         $pasienHariIni = \App\Models\Booking::with(['pasien', 'jadwal.poli', 'pemeriksaan'])
             ->whereHas('jadwal', fn($q) => $q->where('dokter_id', $dokter->id))
             ->whereDate('tanggal_booking', $today)
-            ->whereIn('status', ['pending', 'checked_in', 'selesai', 'expired'])
+            ->where('status', 'checked_in')
             ->get();
 
         $totalPasien = \App\Models\Booking::whereHas('jadwal', fn($q) => $q->where('dokter_id', $dokter->id))

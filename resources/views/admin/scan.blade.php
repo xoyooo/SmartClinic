@@ -88,6 +88,9 @@
                             <span class="text-gray-400 font-medium">Dokter</span>
                             <span id="res-dokter" class="col-span-2 text-gray-800 font-semibold truncate">-</span>
 
+                            <span class="text-gray-400 font-medium">Jam Booking</span>
+                            <span id="res-slot" class="col-span-2 text-gray-800 font-semibold truncate">-</span>
+
                             <span class="text-gray-400 font-medium">Kode</span>
                             <span id="res-kode" class="col-span-2 text-primary-DEFAULT font-mono font-bold">-</span>
                         </div>
@@ -212,6 +215,7 @@
         document.getElementById('res-pasien').textContent = data.nama_pasien;
         document.getElementById('res-poli').textContent = data.poli;
         document.getElementById('res-dokter').textContent = data.dokter;
+        document.getElementById('res-slot').textContent = data.slot_waktu ? data.slot_waktu + ' WIB' : '-';
         document.getElementById('res-kode').textContent = data.kode;
         
         document.getElementById('result-success').classList.remove('hidden');
@@ -224,6 +228,9 @@
         
         document.getElementById('res-err-msg').textContent = msg;
         document.getElementById('result-error').classList.remove('hidden');
+        
+        // Popup peringatan
+        alert('Peringatan: ' + msg);
     }
 </script>
 <style>
