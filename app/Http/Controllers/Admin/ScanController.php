@@ -21,22 +21,19 @@ class ScanController extends Controller
             return response()->json(['success' => false, 'message' => 'QR Code tidak valid / booking tidak ditemukan.'], 404);
         }
 
-        // Cek strict window scan rule
+        // Cek aturan scan: Hanya di hari H dan tidak boleh lewat waktu
         $waktuJadwal = \Carbon\Carbon::parse($booking->tanggal_booking->format('Y-m-d') . ' ' . $booking->slot_waktu);
         $waktuSekarang = now();
 
-        $waktuBukaScan = $waktuJadwal->copy()->subHours(3);
-        $waktuTutupScan = $waktuJadwal->copy()->subMinutes(5);
+        if ($waktuSekarang->toDateString() !== $waktuJadwal->toDateString()) {
+            return response()->json(['success' => false, 'message' => 'Gagal. Tiket hanya dapat di-scan pada hari H jadwal pemeriksaan (' . tglID($waktuJadwal, false) . ').'], 400);
+        }
 
-        if ($booking->status === 'expired' || $waktuSekarang->gt($waktuTutupScan)) {
+        if ($booking->status === 'expired' || $waktuSekarang->gt($waktuJadwal)) {
             if ($booking->status !== 'expired') {
                 $booking->update(['status' => 'expired']);
             }
-            return response()->json(['success' => false, 'message' => 'Gagal. Tiket kedaluwarsa, harus di-scan paling lambat 5 menit sebelum jadwal (' . $waktuTutupScan->format('H:i') . ' WIB).'], 400);
-        }
-
-        if ($waktuSekarang->lt($waktuBukaScan)) {
-            return response()->json(['success' => false, 'message' => 'Terlalu cepat! Tiket baru bisa di-scan mulai 3 jam sebelum jadwal (' . $waktuBukaScan->format('H:i') . ' WIB).'], 400);
+            return response()->json(['success' => false, 'message' => 'Gagal. Tiket kedaluwarsa karena jadwal pemeriksaan (' . $waktuJadwal->format('H.i') . ' WIB) telah lewat.'], 400);
         }
 
         if ($booking->status === 'checked_in') {

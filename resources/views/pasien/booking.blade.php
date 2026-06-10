@@ -1,4 +1,4 @@
-﻿@extends('layouts.patient')
+@extends('layouts.patient')
 
 @if($step === 'index')
     @section('title', 'Pilih Poliklinik')
@@ -374,7 +374,7 @@
             <!-- QR Code Frame (rendered directly from Backend as SVG) -->
             <div class="bg-white border border-gray-100 p-4 inline-flex items-center justify-center rounded-2xl mx-auto shadow-sm">
                 <div class="w-48 h-48 flex items-center justify-center">
-                    {!! QrCode::size(192)->color(15, 76, 117)->generate($booking->kode_booking) !!}
+                    {!! QrCode::size(200)->margin(2)->color(0, 0, 0)->backgroundColor(255, 255, 255)->generate($booking->kode_booking) !!}
                 </div>
             </div>
 
@@ -430,7 +430,7 @@
 
             <div class="border-t border-gray-50 pt-4 text-center">
                 <span class="block text-[10px] text-gray-400 uppercase font-bold">Batas Waktu Scan</span>
-                <span class="text-red-500 font-extrabold text-sm">Hari ini s/d {{ \Carbon\Carbon::parse($booking->expired_at)->format('H.i') }} WIB</span>
+                <span class="text-red-500 font-extrabold text-sm">Hanya pada {{ tglID(\Carbon\Carbon::parse($booking->tanggal_booking), false) }} s/d {{ str_replace(':', '.', substr($booking->slot_waktu, 0, 5)) }} WIB</span>
             </div>
         </div>
     </div>

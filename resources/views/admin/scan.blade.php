@@ -10,12 +10,13 @@
     <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
         <!-- QR Camera Scanner -->
         <div class="md:col-span-7 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
-            <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div class="px-5 py-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h2 class="font-bold text-gray-900">Kamera Scanner</h2>
                     <p class="text-xs text-gray-400 mt-0.5">Izinkan kamera untuk mulai scan</p>
                 </div>
-                <div class="flex gap-2">
+                <div class="flex items-center gap-2">
+                    <select id="cameraSelect" class="hidden bg-gray-50 border border-gray-200 text-xs font-bold rounded-lg px-2.5 py-1.5 focus:border-primary-DEFAULT focus:ring-1 focus:ring-primary-DEFAULT outline-none transition max-w-[150px] sm:max-w-[200px]"></select>
                     <button onclick="startScanner()" id="btnStart" class="px-3 py-1.5 bg-primary-DEFAULT hover:bg-primary-600 text-white text-xs font-semibold rounded-lg transition">Mulai</button>
                     <button onclick="stopScanner()" id="btnStop" disabled class="px-3 py-1.5 bg-gray-250 hover:bg-gray-300 text-gray-700 text-xs font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">Stop</button>
                 </div>
@@ -115,20 +116,86 @@
 
 @push('scripts')
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     let html5QrcodeScanner = null;
 
     function startScanner() {
+        const select = document.getElementById('cameraSelect');
+        if (select.options.length > 0) {
+            startScanningWithDeviceId(select.value);
+        } else {
+            // First time click, load cameras first
+            Html5Qrcode.getCameras().then(cameras => {
+                const select = document.getElementById('cameraSelect');
+                select.innerHTML = '';
+                
+                if (cameras && cameras.length > 0) {
+                    cameras.forEach((camera, index) => {
+                        const option = document.createElement('option');
+                        option.value = camera.id;
+                        option.text = camera.label || `Kamera ${index + 1}`;
+                        select.appendChild(option);
+                    });
+                    
+                    select.classList.remove('hidden');
+                    
+                    // Listen for camera switches
+                    select.onchange = function() {
+                        if (html5QrcodeScanner) {
+                            html5QrcodeScanner.stop().then(() => {
+                                startScanningWithDeviceId(select.value);
+                            }).catch(err => {
+                                console.error(err);
+                                startScanningWithDeviceId(select.value);
+                            });
+                        }
+                    };
+                    
+                    // Select default back/rear camera if available
+                    let selectedId = cameras[0].id;
+                    const backCamera = cameras.find(c => {
+                        const label = c.label.toLowerCase();
+                        return label.includes('back') || label.includes('rear') || label.includes('belakang') || label.includes('environment');
+                    });
+                    if (backCamera) {
+                        selectedId = backCamera.id;
+                    }
+                    select.value = selectedId;
+                    
+                    startScanningWithDeviceId(selectedId);
+                } else {
+                    showError("Tidak ada kamera yang terdeteksi.");
+                }
+            }).catch(err => {
+                console.error(err);
+                showError("Gagal mengakses daftar kamera: " + err);
+            });
+        }
+    }
+
+    function startScanningWithDeviceId(deviceId) {
         document.getElementById('scanner-placeholder').classList.add('hidden');
         document.getElementById('btnStart').disabled = true;
         document.getElementById('btnStop').disabled = false;
 
+        if (html5QrcodeScanner) {
+            html5QrcodeScanner = null;
+        }
+
         html5QrcodeScanner = new Html5Qrcode("reader");
         html5QrcodeScanner.start(
-            { facingMode: "environment" },
+            deviceId,
             {
-                fps: 10,
-                qrbox: { width: 250, height: 250 }
+                fps: 15,
+                qrbox: function(viewfinderWidth, viewfinderHeight) {
+                    var minEdgePercentage = 0.7; // 70% of the smallest edge
+                    var minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+                    var qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
+                    qrboxSize = Math.max(150, Math.min(260, qrboxSize));
+                    return { width: qrboxSize, height: qrboxSize };
+                },
+                aspectRatio: 1.0
             },
             onScanSuccess,
             onScanFailure
@@ -149,6 +216,12 @@
                 html5QrcodeScanner = null;
             }).catch(err => {
                 console.error(err);
+                // Force reset on failure
+                document.getElementById('reader').innerHTML = '';
+                document.getElementById('scanner-placeholder').classList.remove('hidden');
+                document.getElementById('btnStart').disabled = false;
+                document.getElementById('btnStop').disabled = true;
+                html5QrcodeScanner = null;
             });
         } else {
             document.getElementById('scanner-placeholder').classList.remove('hidden');
@@ -160,13 +233,12 @@
     function onScanSuccess(decodedText, decodedResult) {
         // Stop scanning to prevent multiple hits
         stopScanner();
-        // Play success beep sound (optional)
         // Send to backend
         sendCheckin(decodedText);
     }
 
     function onScanFailure(error) {
-        // We can ignore quiet failures of no QR code found in frame
+        // Quiet failure for frame scan
     }
 
     function submitManual(e) {
@@ -215,11 +287,19 @@
         document.getElementById('res-pasien').textContent = data.nama_pasien;
         document.getElementById('res-poli').textContent = data.poli;
         document.getElementById('res-dokter').textContent = data.dokter;
-        document.getElementById('res-slot').textContent = data.slot_waktu ? data.slot_waktu + ' WIB' : '-';
+        document.getElementById('res-slot').textContent = data.slot_waktu ? data.slot_waktu.substring(0, 5).replace(':', '.') + ' WIB' : '-';
         document.getElementById('res-kode').textContent = data.kode;
         
         document.getElementById('result-success').classList.remove('hidden');
         document.getElementById('kode_booking').value = '';
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Check-in atas nama ' + data.nama_pasien + ' sukses.',
+            timer: 2500,
+            showConfirmButton: false
+        });
     }
 
     function showError(msg) {
@@ -229,8 +309,14 @@
         document.getElementById('res-err-msg').textContent = msg;
         document.getElementById('result-error').classList.remove('hidden');
         
-        // Popup peringatan
-        alert('Peringatan: ' + msg);
+        // Popup peringatan dengan SweetAlert2
+        Swal.fire({
+            icon: 'error',
+            title: 'Check-in Ditolak',
+            text: msg,
+            confirmButtonColor: '#0F4C75',
+            confirmButtonText: 'Mengerti'
+        });
     }
 </script>
 <style>
